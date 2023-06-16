@@ -1,28 +1,33 @@
 #!/bin/bash
 
-swap() {
-    local -n elements="$1"
-    local a="$2"
-    local b="$3"
-    local temp="${elements[$a]}"
-    elements[$a]="${elements[$b]}"
-    elements[$b]="$temp"
-}
-
+# Bubble Sort function
 bubble_sort() {
-    local -n elements="$1"
-    local end="$2"
-    if ((end > 0)); then
-        for ((i = 0; i < end; i++)); do
-            if ((elements[i] > elements[i+1])); then
-                swap "$1" "$i" "$((i+1))"
+    local -n arr="$1"
+    local n=${#arr[@]}
+    local swapped
+
+    for ((i = 0; i < n-1; i++)); do
+        swapped=false
+
+        for ((j = 0; j < n-i-1; j++)); do
+            if ((arr[j] < arr[j+1])); then
+                # Swap elements
+                local temp=${arr[j]}
+                arr[j]=${arr[j+1]}
+                arr[j+1]=$temp
+                swapped=true
             fi
         done
-        ((end--))
-        bubble_sort "$1" "$end"
-    fi
+
+        # If no elements were swapped in the inner loop, the array is already sorted
+        if [[ "$swapped" = false ]]; then
+            break
+        fi
+    done
 }
 
+# Example usage
 elements=(-1 -2 8 5 6 2 3 1 4)
-bubble_sort "elements" $(( ${#elements[@]} - 1 ))
-echo "${elements[@]}"
+bubble_sort elements
+
+echo "Sorted elements: ${elements[@]}"
